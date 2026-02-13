@@ -14,10 +14,10 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "id_category", nullable = false, length = 100)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name_category")
     private String name;
 
 
