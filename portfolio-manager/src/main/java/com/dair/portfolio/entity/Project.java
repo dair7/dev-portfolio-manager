@@ -3,7 +3,10 @@ package com.dair.portfolio.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Data
 @NoArgsConstructor
@@ -32,17 +35,32 @@ public class Project {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    @ToString.Exclude
-    private Category category;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @ManyToMany
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", length = 50, nullable = false)
+    private ProjectCategory category;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "project_technologies",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "technology_id")
+        name = "project_technologies",
+        joinColumns = @JoinColumn(name = "project_id"),
+        inverseJoinColumns = @JoinColumn(name = "technology_id")
     )
-    @ToString.Exclude
-    private List<Technology> technologies;
+    private Set<Technology> technologies = new HashSet<>();
 }
